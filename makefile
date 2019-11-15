@@ -1,10 +1,17 @@
 
-#  FC, INCLUDE, LIBS obtained with command
-#  nc-config --fc --includedir --flibs
-FC = ifort
-FFLAGS = -c -g -O2 -convert big_endian
-INCLUDE = -I/glade/u/apps/dav/opt/netcdf/4.6.1/intel/17.0.1/include
-LIBS = -L/glade/u/apps/dav/opt/netcdf/4.6.1/intel/17.0.1/lib -lnetcdff -L/glade/u/apps/dav/opt/netcdf/4.6.1/intel/17.0.1/lib -Wl,-rpath,/glade/u/apps/dav/opt/netcdf/4.6.1/intel/17.0.1/lib -Wl,--disable-new-dtags -lnetcdf -lnetcdf
+FC := $(shell nc-config --fc)
+
+FFLAGS := -c -g -O2
+ifeq ($(FC),gfortran)
+   FFLAGS := $(FFLAGS) -fconvert=big-endian
+endif
+ifeq ($(FC),ifort)
+   FFLAGS := $(FFLAGS) -convert big_endian
+endif
+
+INCLUDE := $(shell nc-config --fflags)
+
+LIBS := $(shell nc-config --flibs)
 
 OBJECTS = \
    array_tools.o \
