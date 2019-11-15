@@ -1,0 +1,14 @@
+
+&regrid_nml
+  src_file = 'fland.nc'
+  src_var  = 'fland'
+  dst_imt  = 360
+  dst_jmt  = 240
+  dst_km   =  40
+  dst_horiz_grid_file      = '/glade/p/cesm/cseg/inputdata/ocn/pop/tx1v1/grid/horiz_grid_20050510.ieeer8'
+  dst_vert_grid_file       = '/glade/p/cesm/cseg/collections/cesm1_1_1/models/ocn/pop2/input_templates/tx1v1_vert_grid'
+  dst_topography_file      = '/glade/p/cesm/cseg/inputdata/ocn/pop/tx1v1/grid/topography_20050510.ieeei4'
+  dst_region_mask_filename = '/glade/p/cesm/cseg/inputdata/ocn/pop/tx1v1/grid/region_mask_20050510.ieeei4'
+  dst_file     = 'fland_tx1v1.nc'
+  dst_lclobber = .true.
+/
