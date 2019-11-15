@@ -21,6 +21,7 @@ MODULE vars_mod
   LOGICAL(KIND=log_kind)  :: lextendz
 
   INTEGER(KIND=int_kind)  :: dst_imt, dst_jmt, dst_km
+  LOGICAL(KIND=log_kind)  :: dst_ltripole_grid
   CHARACTER(LEN=char_len) :: dst_horiz_grid_file
   CHARACTER(LEN=char_len) :: dst_vert_grid_file
   CHARACTER(LEN=char_len) :: dst_topography_file

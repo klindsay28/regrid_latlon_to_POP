@@ -1415,7 +1415,11 @@ CONTAINS
     !   local variables
     !---------------------------------------------------------------------------
 
-    INTEGER(KIND=int_kind) :: imt, jmt, i, j, ip1, im1, jp1, jm1
+    INTEGER(KIND=int_kind) :: imt, jmt, i, j
+    INTEGER(KIND=int_kind) :: in, jn ! indices for north neighbor cell
+    INTEGER(KIND=int_kind) :: ie, je ! indices for  east neighbor cell
+    INTEGER(KIND=int_kind) :: is, js ! indices for south neighbor cell
+    INTEGER(KIND=int_kind) :: iw, jw ! indices for  west neighbor cell
     REAL(KIND=real_kind), DIMENSION(:, :), ALLOCATABLE :: work
     LOGICAL(KIND=log_kind) :: filled_a_cell
 
@@ -1439,26 +1443,33 @@ CONTAINS
        work = data
        DO j = 1,jmt
 
-          jm1 = MAX(j - 1, 1)
-          jp1 = MIN(j + 1, jmt)
+          jn = MIN(j + 1, jmt)
+          je = j
+          js = MAX(j - 1, 1)
+          jw = j
 
           DO i = 1,imt
 
-             im1 = i - 1
-             IF (i == 1) im1 = imt
-             ip1 = i + 1
-             IF (i == imt) ip1 = 1
+             in = i
+             IF (dst_ltripole_grid .AND. (j == jmt)) THEN
+                in = imt + 1 - i
+             END IF
+             ie = i + 1
+             IF (i == imt) ie = 1
+             is = i
+             iw = i - 1
+             IF (i == 1) iw = imt
 
              IF (mask(i,j) .AND. data(i,j) == msv) THEN
 
-                vals = (/ work(ip1,j), work(i,jp1), work(im1,j), work(i,jm1) /)
+                vals = (/ work(in,jn), work(ie,je), work(is,js), work(iw,jw) /)
 
                 !---------------------------------------------------------------
                 !   fill only from unmasked points w/ valid data
                 !---------------------------------------------------------------
 
                 interp_mask = &
-                     (/ mask(ip1,j), mask(i,jp1), mask(im1,j), mask(i,jm1) /)
+                     (/ mask(in,jn), mask(ie,je), mask(is,js), mask(iw,jw) /)
                 interp_mask = interp_mask .AND. (vals /= msv)
 
                 IF (ANY(interp_mask)) THEN

@@ -22,7 +22,7 @@ PROGRAM main
   NAMELIST /regrid_nml/ &
        src_file, src_var, &
        lextendz, &
-       dst_imt, dst_jmt, dst_km, &
+       dst_imt, dst_jmt, dst_km, dst_ltripole_grid, &
        dst_horiz_grid_file, dst_vert_grid_file, dst_topography_file, &
        dst_region_mask_filename, &
        dst_file, dst_lclobber, dst_var
@@ -41,6 +41,7 @@ PROGRAM main
   dst_imt = 0
   dst_jmt = 0
   dst_km  = 0
+  dst_ltripole_grid = .FALSE.
   dst_horiz_grid_file      = 'unknown'
   dst_vert_grid_file       = 'unknown'
   dst_topography_file      = 'unknown'
