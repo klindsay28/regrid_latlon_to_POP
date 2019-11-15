@@ -606,11 +606,16 @@ CONTAINS
        dst_kmin = MINLOC(ABS(dst_depth-src_depth(1)), DIM=1)
        dst_kmax = dst_kmin
     ELSE
-       ztmp = MINVAL(src_depth)
-       dst_kmin = MINLOC(dst_depth, DIM=1, MASK=(dst_depth >= ztmp))
+       IF (lextendz) THEN
+          dst_kmin = 1
+          dst_kmax = dst_km
+       ELSE
+          ztmp = MINVAL(src_depth)
+          dst_kmin = MINLOC(dst_depth, DIM=1, MASK=(dst_depth >= ztmp))
 
-       ztmp = MAXVAL(src_depth)
-       dst_kmax = MAXLOC(dst_depth, DIM=1, MASK=(dst_depth <= ztmp))
+          ztmp = MAXVAL(src_depth)
+          dst_kmax = MAXLOC(dst_depth, DIM=1, MASK=(dst_depth <= ztmp))
+       END IF
 
        IF (dst_kmax < dst_kmin) THEN
           CALL msg_write(sub_name, 'internal error : dst_kmax < dst_kmin')
@@ -1111,7 +1116,7 @@ CONTAINS
     INTEGER(KIND=int_kind) :: dst_lev, src_lev, i, j
     REAL(KIND=real_kind) :: dst_z, src_z, src_z_above, src_z_below, wz, &
        num, denom
-    LOGICAL(KIND=log_kind) :: needs_fill
+    LOGICAL(KIND=log_kind) :: lcopy_lev, needs_fill
 
     !---------------------------------------------------------------------------
     !   allocate local allocatable vars
@@ -1173,7 +1178,14 @@ CONTAINS
        src_lev = MINLOC(ABS(src_depth-dst_z), DIM=1)
        src_z = src_depth(src_lev)
 
-       IF (equal(src_z, dst_z, RELTOL=1.0e-4)) THEN
+       lcopy_lev = equal(src_z, dst_z, RELTOL=1.0e-4)
+       IF (lextendz) THEN
+          lcopy_lev = lcopy_lev .OR. &
+                      (dst_z .le. MINVAL(src_depth)) .OR. &
+                      (dst_z .ge. MAXVAL(src_depth))
+       END IF
+
+       IF (lcopy_lev) THEN
           CALL nf_get_vara_wrap(src_ncid, src_varid, (/ 1, 1, src_lev, l /), &
                (/ src_imt, src_jmt, 1, 1 /), src_data)
           CALL regrid_level(msv, src_data, src_data_above_on_dst, &

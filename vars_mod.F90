@@ -18,6 +18,8 @@ MODULE vars_mod
   CHARACTER(LEN=char_len) :: src_file
   CHARACTER(LEN=char_len) :: src_var
 
+  LOGICAL(KIND=log_kind)  :: lextendz
+
   INTEGER(KIND=int_kind)  :: dst_imt, dst_jmt, dst_km
   CHARACTER(LEN=char_len) :: dst_horiz_grid_file
   CHARACTER(LEN=char_len) :: dst_vert_grid_file
